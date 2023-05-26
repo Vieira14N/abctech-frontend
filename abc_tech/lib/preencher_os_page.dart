@@ -16,7 +16,7 @@ class _PreencherOsPageState extends State<PreencherOsPage> {
   TextEditingController codigo = TextEditingController();
   String _value = 'Selecionar categoria';
   List<String> listaServicos = [];
-  late DateTime now;
+  late DateTime inicio;
   String lat = '';
   String long = '';
 
@@ -141,11 +141,11 @@ class _PreencherOsPageState extends State<PreencherOsPage> {
                         listaServicos.isNotEmpty) {
                       //Mensagem de sucesso
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Atendiento iniciado, aguarde...'),
+                        content: Text('Atendimento iniciado, aguarde...'),
                         backgroundColor: Colors.black38,
                       ));
                       // Setando data e hora inicial
-                      now = DateTime.now();
+                      inicio = DateTime.now();
                       // Setando localização inicial
 
                       await getLocalInicial().then((value) {
@@ -160,7 +160,7 @@ class _PreencherOsPageState extends State<PreencherOsPage> {
                             builder: (context) => FinalizarOS(
                                   codigo: codigo.text,
                                   listaServicos: listaServicos,
-                                  now: now,
+                                  now: inicio,
                                   latInicial: lat,
                                   longInicial: long,
                                 )),

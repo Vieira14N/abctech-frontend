@@ -1,4 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:abc_tech/resumo_os.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 
 class FinalizarOS extends StatelessWidget {
@@ -17,8 +21,19 @@ class FinalizarOS extends StatelessWidget {
     required this.longInicial,
   });
 
+  
+
+  //localização final
+  Future<Position> getLocalFinal() async {
+    return await Geolocator.getCurrentPosition();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+  late DateTime fim;
+  String latFinal = '';
+  String longFinal = '';
     
   String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(now);
   
@@ -37,7 +52,7 @@ class FinalizarOS extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Text(
-                'Atedimento iniciado, abaixo seguem os detalhes. Ao finalizar, clique em "Finalizar atendimet":',
+                'Atedimento iniciado, abaixo seguem os detalhes. Ao finalizar, clique em "Finalizar atendimento":',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
@@ -77,8 +92,36 @@ class FinalizarOS extends StatelessWidget {
                       backgroundColor: Colors.black38,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
-                  onPressed: () {
-                    
+                  onPressed: () async {
+                    //Mensagem de sucesso
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Atendimento finalizado, aguarde...'),
+                        backgroundColor: Colors.black38,
+                      ));
+                      // Setando data e hora inicial
+                      fim = DateTime.now();
+                      // Setando localização inicial
+
+                      await getLocalFinal().then((value) {
+                        latFinal = '${value.latitude}';
+                        longFinal = '${value.longitude}';
+                      });
+
+                      // Navegando pra tela seguinte
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ResumoOS(
+                                  codigo: codigo,
+                                  listaServicos: listaServicos,
+                                  now: now,
+                                  then: fim,
+                                  latInicial: latInicial,
+                                  longInicial: longInicial,
+                                  latFinal: latFinal,
+                                  longFinal: longFinal,
+                                )),
+                      );
                   },
                   child: const Text(
                     'Finalizar Atendimento',
