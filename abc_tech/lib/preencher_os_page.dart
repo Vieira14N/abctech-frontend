@@ -1,7 +1,8 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'package:abc_tech/finalizar_os_page.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 class PreencherOsPage extends StatefulWidget {
   const PreencherOsPage({super.key});
@@ -16,6 +17,13 @@ class _PreencherOsPageState extends State<PreencherOsPage> {
   String _value = 'Selecionar categoria';
   List<String> listaServicos = [];
   late DateTime now;
+  String lat = '';
+  String long = '';
+
+  //localização inicial
+  Future<Position> getLocalInicial() async {
+    return await Geolocator.getCurrentPosition();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,24 +136,33 @@ class _PreencherOsPageState extends State<PreencherOsPage> {
                       backgroundColor: Colors.black38,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate() &&
                         listaServicos.isNotEmpty) {
+                      //Mensagem de sucesso
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Atendiento iniciado.'),
-                        backgroundColor: Colors.greenAccent,
+                        content: Text('Atendiento iniciado, aguarde...'),
+                        backgroundColor: Colors.black38,
                       ));
-
+                      // Setando data e hora inicial
                       now = DateTime.now();
-                      
+                      // Setando localização inicial
 
+                      await getLocalInicial().then((value) {
+                        lat = '${value.latitude}';
+                        long = '${value.longitude}';
+                      });
+
+                      // Navegando pra tela seguinte
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => FinalizarOS(
                                   codigo: codigo.text,
                                   listaServicos: listaServicos,
-                                  now: now
+                                  now: now,
+                                  latInicial: lat,
+                                  longInicial: long,
                                 )),
                       );
                     } else {

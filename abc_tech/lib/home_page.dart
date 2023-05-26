@@ -1,8 +1,34 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:abc_tech/preencher_os_page.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
+
+  //localização autorização
+  Future<Position?> getAutorizacao() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error("Serviço de localização desabilitado.");
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error("Serviço de localização não autorizado.");
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Serviço de localização não autorizado permanentemente.');
+    }
+
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +53,8 @@ class HomePage extends StatelessWidget {
                   backgroundColor: Colors.black38,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10))),
-              onPressed: () {
+              onPressed: () async {
+                await getAutorizacao();
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const PreencherOsPage()),

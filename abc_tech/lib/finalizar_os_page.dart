@@ -5,12 +5,16 @@ class FinalizarOS extends StatelessWidget {
   final String codigo;
   final List<String> listaServicos;
   final DateTime now;
+  final String latInicial;
+  final String longInicial;
 
   const FinalizarOS({
     super.key,
     required this.codigo,
     required this.listaServicos,
     required this.now,
+    required this.latInicial,
+    required this.longInicial,
   });
 
   @override
@@ -33,7 +37,7 @@ class FinalizarOS extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Text(
-                'Resumo do atendimento:',
+                'Atedimento iniciado, abaixo seguem os detalhes. Ao finalizar, clique em "Finalizar atendimet":',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
@@ -45,8 +49,13 @@ class FinalizarOS extends StatelessWidget {
               ),
               Text(formattedDate),
               // Localização
-              
-
+              const SizedBox(height: 16),
+              const Text(
+                '- Localização inicial:',
+                style: TextStyle(fontSize: 16),
+              ),
+              Text('Latitude: $latInicial'),
+              Text('Longitude: $longInicial'),
               const SizedBox(height: 16),
               const Text(
                 '- Serviços selecionados:',
@@ -62,6 +71,20 @@ class FinalizarOS extends StatelessWidget {
                   },
                 ),
               ),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(16),
+                      backgroundColor: Colors.black38,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10))),
+                  onPressed: () {
+                    
+                  },
+                  child: const Text(
+                    'Finalizar Atendimento',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                ),
             ],
           ),
         ),
